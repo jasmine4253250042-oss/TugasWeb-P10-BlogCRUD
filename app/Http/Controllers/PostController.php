@@ -1,8 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
-use Illuminate\Http\Request;
 
+use Illuminate\Http\Request;
 use App\Models\Post;
 
 class PostController extends Controller
@@ -30,17 +30,23 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-         $validated = $request->validate([
-        'title' => 'required|max:255',
-        'content' => 'required',
-        'image' => 'nullable|image|max:2048',
+        $validated = $request->validate([
+            'title' => 'required|max:255',
+            'content' => 'required',
+            'image' => 'nullable|image|max:2048',
         ]);
 
-        Post::create($validated);
+        try {
+            Post::create($validated);
 
-        return redirect()
-            ->route('posts.index')
-            ->with('success', 'Post berhasil ditambahkan.');
+            return redirect()
+                ->route('posts.index')
+                ->with('success', 'Post berhasil ditambahkan.');
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'Post gagal ditambahkan.');
+        }
     }
 
     /**
@@ -56,7 +62,7 @@ class PostController extends Controller
      */
     public function edit(Post $post)
     {
-       return view('posts.edit', compact('post'));
+        return view('posts.edit', compact('post'));
     }
 
     /**
@@ -64,17 +70,23 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-         $validated = $request->validate([
-        'title' => 'required|max:255',
-        'content' => 'required',
-        'image' => 'nullable|image|max:2048',
+        $validated = $request->validate([
+            'title' => 'required|max:255',
+            'content' => 'required',
+            'image' => 'nullable|image|max:2048',
         ]);
 
-        $post->update($validated);
+        try {
+            $post->update($validated);
 
-        return redirect()
-            ->route('posts.index')
-            ->with('success', 'Post berhasil diperbarui.');
+            return redirect()
+                ->route('posts.index')
+                ->with('success', 'Post berhasil diperbarui.');
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'Post gagal diperbarui.');
+        }
     }
 
     /**
@@ -82,10 +94,16 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-         $post->delete();
+        try {
+            $post->delete();
 
-        return redirect()
-            ->route('posts.index')
-            ->with('success', 'Post berhasil dihapus.');
+            return redirect()
+                ->route('posts.index')
+                ->with('success', 'Post berhasil dihapus.');
+        } catch (\Exception $e) {
+            return redirect()
+                ->back()
+                ->with('error', 'Post gagal dihapus.');
+        }
     }
 }

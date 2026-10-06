@@ -6,7 +6,7 @@
 
     <h1>Daftar Post</h1>
 
-    <x-alert :message="session('success')" />
+    <x-alert />
 
     <a href="{{ route('posts.create') }}">+ Buat Post Baru</a>
 
